@@ -84,4 +84,6 @@ let common_libraries =
     ; "xmlm"
     ; "yojson"
     ; "zarith"
-    ; "zip" ]
+    ; "zip" 
+    ; "z3"  ]
+
