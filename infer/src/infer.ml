@@ -51,7 +51,8 @@ let setup () =
       then SourceFiles.mark_all_stale ()
   | Explore ->
       ResultsDir.assert_results_dir "please run an infer analysis first"
-  | SymExec -> ()
+  | SymExec -> 
+      ResultsDir.assert_results_dir "please run an infer analysis first"
   | Events ->
       ResultsDir.assert_results_dir "have you run infer before?" ) ;
   if CLOpt.is_originator then (
