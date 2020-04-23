@@ -2408,6 +2408,14 @@ and xcpretty =
      to be in the path, infer command is still just $(i,`infer -- <xcodebuild command>`)."
 
 
+(* symbolic execution option *)
+
+and function_entry =
+  CLOpt.mk_string_opt ~long:"entry"
+    ~in_help:InferCommand.[(SymExec, manual_generic)]
+    "get entry function's name"
+
+
 (* The "rest" args must appear after "--" on the command line, and hence after other args, so they
    are allowed to refer to the other arg variables. *)
 
@@ -3220,6 +3228,10 @@ and write_html_whitelist_regex = !write_html_whitelist_regex
 and xcode_developer_dir = !xcode_developer_dir
 
 and xcpretty = !xcpretty
+
+(** symbolic execution **)
+
+and function_entry = !function_entry
 
 (** Configuration values derived from command-line options *)
 

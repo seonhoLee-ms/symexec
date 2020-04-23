@@ -723,6 +723,9 @@ val write_html_whitelist_regex : string list
 val xcode_developer_dir : string option
 
 val xcpretty : bool
+(** symbolic execution option**)
+
+val function_entry : string option
 (** {2 Global variables with initial values specified by command-line options} *)
 
 val clang_compilation_dbs : [`Escaped of string | `Raw of string] list ref
