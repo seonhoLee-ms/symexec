@@ -1,6 +1,6 @@
 open !IStd
 
-let main () = ()
+let main () = InfoGetter.main ()
   
 
 let rec run ~entry ~timeout ~workset = workset
