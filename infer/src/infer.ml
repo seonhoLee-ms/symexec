@@ -134,7 +134,7 @@ let () =
   else
     match Config.command with
     | SymExec -> 
-      L.progress "Running Symbolic Executor!!" ;
+      L.progress "Running Symbolic Executor!\n" ;
       SymbolicExecutor.main ()
     | Analyze ->
         run Driver.Analyze

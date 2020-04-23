@@ -3,27 +3,24 @@ open! IStd
 module F = Format
 module L = Logging
 
-let rec run ~lst = 
- match lst with
- | [] -> L.progress "\nAll Files End\n"
- | h::t -> 
-   let plist = SourceFiles.proc_names_of_source h in
-   begin match plist with 
-   | [] -> L.progress "File End\n"
-   | h::t -> L.progress "%a" Typ.Procname.pp h
-   end;
-   run ~lst:t 
- 
- (*SourceFiles.pp_all ~filter:(fun _ -> true) ~type_environment: true
-           ~procedure_names: true ~freshly_captured: false F.Acc_string_literal  run ~lst:t*)
+let get_java_proc_names ~source ~acc= 
+  let acc = acc in
+  let plist = SourceFiles.proc_names_of_source source in
+  let jprocs = List.fold plist ~init:acc
+    ~f:(fun acc elem -> 
+       begin match elem with 
+       | Typ.Procname.Java _ -> elem::acc
+       | _ as m-> L.(die InternalError "%s is not java method!" (Typ.Procname.to_string m))  
+       end) in 
+  L.progress "FileName: %a\n" SourceFile.pp source;
+  L.progress "%a" (Pp.seq ~sep: "\n" Typ.Procname.pp) jprocs;
+  L.progress "\n";
+  jprocs
 
 let main () = 
   let source_files_all = SourceFiles.get_all ~filter:(fun _ -> true) () in
-  run source_files_all
-  
- 
-  
-
-
-
-
+  let empty = [] in
+  let all_procs = List.fold source_files_all ~init:empty 
+    ~f:(fun acc elem -> get_java_proc_names ~source:elem ~acc:acc) 
+  in 
+  L.progress "Process End\n";
