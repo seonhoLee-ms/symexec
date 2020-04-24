@@ -2,5 +2,7 @@ open! IStd
 
 module F = Format
 
-val main : unit -> unit 
+type t
+
+val infogetter : unit -> t 
 

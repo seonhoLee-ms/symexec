@@ -1,8 +1,11 @@
 open !IStd
 
-let main () = InfoGetter.main ()
-  
+module L = Logging
 
+let main () = 
+  let info = InfoGetter.infogetter () in
+  () 
+  
 let rec run ~entry ~timeout ~workset = workset
     (** 
      * match SymbolicDomain.States.pop with
