@@ -3,19 +3,23 @@ open! IStd
 module F = Format
 module L = Logging
 
-type info = { 
+type t = { 
   jprocs: Typ.Procname.Java.t list;
-  pmap: Procdesc.t Typ.Procname.Map.t; 
-  entry: Procdesc.Node.t;
+  pmap: Procdesc.t Typ.Procname.Map.t;
+  entry: Procdesc.t option
 }
 
-type t = info
-
-let empty:info = {
+let empty = {
   jprocs = [];
-  pmap =Typ.Procname.Map.empty;
-  entry =Procdesc.Node.dummy Typ.Procname.empty_block;
+  pmap = Typ.Procname.Map.empty;
+  entry = None;
 }
+let get_pmap {pmap} = pmap
+
+let get_entry {entry} = 
+  match entry with
+  | Some x -> x
+  | None -> L.(die InternalError "entry must be declared")
 
 let get_infos ~source ~acc= 
   let procs = SourceFiles.proc_names_of_source source in
@@ -36,7 +40,7 @@ let get_infos ~source ~acc=
        | _ as m-> L.(die InternalError "%s is not java method!" (Typ.Procname.to_string m)) end) 
   in 
   info
-  
+
 let find_entry ~info ~classname ~methodname = 
   let entry_name = List.filter info.jprocs ~f: (fun proc -> 
     String.equal (Typ.Procname.Java.get_method proc) methodname &&
@@ -44,11 +48,11 @@ let find_entry ~info ~classname ~methodname =
   let key = match entry_name with 
     | e::[] -> Typ.Procname.Java e 
     | _ -> L.(die InternalError "given function is not exist") in
-  Typ.Procname.Map.find key info.pmap |>
-  Procdesc.get_start_node 
+  let entry_desc = Typ.Procname.Map.find_opt key info.pmap in
+  (entry_desc)
 
 let driver () =
-  L.progress "fetching IR information start"; 
+  L.progress "fetching IR information start\n"; 
   let command_arg = Config.function_entry in 
   let entry_class, entry_method = 
   match command_arg with
@@ -68,7 +72,7 @@ let driver () =
   in 
   let entry = find_entry ~info:all_info ~classname:entry_class ~methodname:entry_method in
   let all_info = {all_info with entry=entry} in
-  L.progress "fetching IR information done";
+  L.progress "fetching IR information done\n";
   all_info
 
 let infogetter () = driver ()

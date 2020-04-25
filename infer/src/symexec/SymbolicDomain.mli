@@ -9,6 +9,13 @@ end
 
 module State : sig 
     type t = {mem: string Memory.t; pc: PathCond.t; currnode: Procdesc.Node.t}
+    val pp : F.formatter -> t -> unit
+    
+    val create_initial_state : string Memory.t -> Procdesc.Node.t -> t
+
+    val create_state : string Memory.t -> PathCond.t -> Procdesc.Node.t -> t 
+    
 end
 
 module StateSet : PrettyPrintable.PPSet with type elt = State.t
+
