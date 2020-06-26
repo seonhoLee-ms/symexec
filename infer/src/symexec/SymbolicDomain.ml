@@ -9,7 +9,7 @@ module Memory = struct
 end
 
 module PathCond = struct
-    type t = bool (**)
+    type t = Exp.t option (**)
     [@@deriving compare]
 end
 
@@ -20,11 +20,10 @@ module State = struct
     | {mem; pc; curr_node} -> F.fprintf fmt "hoho"
     
     let create_initial_state ~memory ~curr_node =
-      let pc = true in
       { mem = memory;
-        pc = pc;
+        pc = None;
         curr_node = curr_node;
-       }
+       } 
     
     let create_state ~memory ~pc ~curr_node =
       { mem = memory;
